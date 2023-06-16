@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+    <record><type>Chainsaw</type><daily_charge>1.49</daily_charge><weekday_charge>true</weekday_charge><weekend_charge>false</weekend_charge><holiday_charge>true</holiday_charge></record>
+    <record><type>Jackhammer</type><daily_charge>2.99</daily_charge><weekday_charge>true</weekday_charge><weekend_charge>false</weekend_charge><holiday_charge>false</holiday_charge></record>
+    <record><type>Ladder</type><daily_charge>1.99</daily_charge><weekday_charge>true</weekday_charge><weekend_charge>true</weekend_charge><holiday_charge>false</holiday_charge></record>
+</dataset>

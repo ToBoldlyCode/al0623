@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+    <record><Code>CHNS</Code><Type>Chainsaw</Type><Brand>Stihl</Brand></record>
+    <record><Code>JAKD</Code><Type>Jackhammer</Type><Brand>DeWalt</Brand></record>
+    <record><Code>JAKR</Code><Type>Jackhammer</Type><Brand>Ridgid</Brand></record>
+    <record><Code>LADW</Code><Type>Ladder</Type><Brand>Werner</Brand></record>
+</dataset>
