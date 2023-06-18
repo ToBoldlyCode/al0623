@@ -30,33 +30,26 @@ public class RentalAgreementForm {
 	public static void main(String[] args)
     {	
 		RentalAgreementForm form = new RentalAgreementForm();
-		form.fillRentalAgreement();
-		form.printRentalAgreement();
-    }
-
-	protected void fillRentalAgreement() {
-		String inputToolCode = getInputValue(scanner, PROMPT_CODE, this::validateInputToolCode);
-		String inputRentalDays = getInputValue(scanner, PROMPT_RENTAL_DAYS, this::validateInputRentalDays);
-		String inputDiscount = getInputValue(scanner, PROMPT_DISCOUNT, this::validateInputDiscount);
-		String inputDate = getInputValue(scanner, PROMPT_DATE, this::validateInputDate);
-		
-		scanner.close();
-		
-		rentalAgreement.setToolCode(inputToolCode);
-		
 		try {
-		    int rentalDays = Integer.parseInt(inputRentalDays);
-		    rentalAgreement.setRentalDays(rentalDays);
-
-		    int discountPercent = Integer.parseInt(inputDiscount);
-		    rentalAgreement.setDiscountPercent(discountPercent);
-
-		    LocalDate checkoutDate = LocalDate.parse(inputDate, DateTimeFormatter.ofPattern("M/d/yy"));
-		    rentalAgreement.setCheckoutDate(checkoutDate);
+			form.promptUser();
+			form.calcRentalAgreement();
+			form.printRentalAgreement();
 		} catch (Exception e) {
-		    logger.log(Level.WARNING, "An exception occurred: " + e.getMessage());
+			logger.log(Level.SEVERE, e.getMessage());
+		} finally
+		{
+			form.scanner.close();
 		}
-		
+    }
+	
+	private void promptUser() {
+		getInputValue(scanner, PROMPT_CODE, this::validateInputToolCode);
+		getInputValue(scanner, PROMPT_RENTAL_DAYS, this::validateInputRentalDays);
+		getInputValue(scanner, PROMPT_DISCOUNT, this::validateInputDiscount);
+		getInputValue(scanner, PROMPT_DATE, this::validateInputDate);
+	}
+
+	protected void calcRentalAgreement() {
 		ToolRentalCharge toolRentalCharge = new ToolRentalCharge();
 		toolRentalCharge.setToolType(rentalAgreement.getToolType());
 		toolRentalCharge.findToolRentalChargeByToolType();
@@ -87,7 +80,7 @@ public class RentalAgreementForm {
 		System.out.println(text);
 	}
 
-	private static String getInputValue(Scanner scanner, String prompt, Function<String, Boolean> validator) {
+	private void getInputValue(Scanner scanner, String prompt, Function<String, Boolean> validator) {
 		String inputValue = "";
 		boolean nextPrompt = false;
 		
@@ -107,7 +100,6 @@ public class RentalAgreementForm {
 	        	scanner.nextLine();
 	        }
 	    }
-	    return inputValue;
 	}
 	
 	protected Boolean validateInputToolCode(String inputToolCode) {
@@ -131,6 +123,7 @@ public class RentalAgreementForm {
 	        	System.out.println(ERROR_RENTAL_DAYS_LT_ONE);
 	        	return false;
 	        }
+	        rentalAgreement.setRentalDays(rentalDays);
 	    } catch (Exception e) {
 	    	logger.log(Level.WARNING, "An exception occurred: " + e.getMessage() + " " + ERROR_RENTAL_DAYS_LT_ONE);
 	    	return false;
@@ -147,6 +140,7 @@ public class RentalAgreementForm {
 	        	System.out.println(ERROR_DISCOUNT_OUT_OF_RANGE);
 	        	return false;
 	        }
+	        rentalAgreement.setDiscountPercent(discount);
 	    } catch (Exception e) {
 	    	logger.log(Level.WARNING, "An exception occurred: " + e.getMessage() + " " + ERROR_DISCOUNT_OUT_OF_RANGE);
 	    	return false;
@@ -160,6 +154,7 @@ public class RentalAgreementForm {
 
 	    try {
 	        LocalDate date = LocalDate.parse(inputDate, formatter);
+	        rentalAgreement.setCheckoutDate(date);
 	    } catch (Exception e) {
 	    	logger.log(Level.WARNING, "Invalid date: " + e.getMessage());
 	    	return false;

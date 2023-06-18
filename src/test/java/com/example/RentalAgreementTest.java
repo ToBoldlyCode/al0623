@@ -20,14 +20,19 @@ import com.example.rentalagreement.*;
 
 
 class RentalAgreementTest extends RentalAgreementForm {
+	
+	DateTimeFormatter dateInputFormatter = DateTimeFormatter.ofPattern("M/d/yy");
 
+	/*Test 1:
+     * Tool code: JAKR 
+     * Checkout date: 9/3/15
+     * Rental days: 5
+     * Discount: 101%
+     * Fails on discount out of range
+     */
 	@Test
 	public void isInputDiscountGreaterThanRange() { 
-		
-		String toolCode = "JAKR";
-		String rentalDays = "5";
 		String discount = "101";
-		String date = "9/3/15";
 	    
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PrintStream originalOut = System.out;
@@ -43,104 +48,139 @@ class RentalAgreementTest extends RentalAgreementForm {
         }
 	}
 	
+    /*Test 2:
+     * Tool code: LADW
+     * Checkout date: 7/2/20
+     * Rental days: 3
+     * Discount: 10%
+     * Final price: $3.58
+     */
 	@Test
 	public void calcIndependenceDaySaturdayNoHolidayChargeIsWeekendCharge() { 
 		
 		String toolCode = "LADW";
-		String rentalDays = "3";
-		String discount = "10";
-		String date = "7/2/20";
+		String toolType = "Ladder" ;
+		String toolBrand = "Werner" ;
+		int rentalDays = 3;
+		int discount = 10;
+		String dateString = "7/2/20";
+		LocalDate date = LocalDate.parse(dateString, dateInputFormatter);
 		String price = "1.99";
 		String chargeDays = "2";
 		
-		RentalAgreementForm rentalAgreementForm = new RentalAgreementForm();
-	    validateInputRentalAgreement(rentalAgreement, toolCode, rentalDays, discount, date);
-	    buildRentalAgreement(rentalAgreement, toolCode, rentalDays, discount, date);
-		
+		buildRentalAgreement(toolCode, toolType, toolBrand, rentalDays, discount, date);
+		calcRentalAgreement();
         BigDecimal finalPrice = calculatePrice(price, chargeDays, discount);
 	    
-	    assertEquals("Charge Days", Integer.parseInt(chargeDays), rentalAgreement.getChargeDays());
 	    assertEquals("Final Charge", finalPrice, rentalAgreement.getFinalCharge());
-	    
 	}
 	
+	
+    /*Test 3:
+     * Tool code: CHNS
+     * Checkout date: 7/2/15
+     * Rental days: 5
+     * Discount: 25%
+     * Final price: $3.35
+     */	
 	@Test
 	public void calcIndependenceDaySaturdayIsHolidayChargeNoWeekendCharge() { 
 		
 		String toolCode = "CHNS";
-		String rentalDays = "5";
-		String discount = "25";
-		String date = "7/2/15";
+		String toolType = "Chainsaw" ;
+		String toolBrand = "Stihl" ;
+		int rentalDays = 5;
+		int discount = 25;
+		String dateString = "7/2/15";
+		LocalDate date = LocalDate.parse(dateString, dateInputFormatter);
 		String price = "1.49";
 		String chargeDays = "3";
 		
-		RentalAgreementForm rentalAgreementForm = new RentalAgreementForm();
-	    validateInputRentalAgreement(rentalAgreement, toolCode, rentalDays, discount, date);
-	    buildRentalAgreement(rentalAgreement, toolCode, rentalDays, discount, date);
-		
+		buildRentalAgreement(toolCode, toolType, toolBrand, rentalDays, discount, date);
+		calcRentalAgreement();
 	    BigDecimal finalPrice = calculatePrice(price, chargeDays, discount);
 	    
-	    assertEquals("Charge Days", Integer.parseInt(chargeDays), rentalAgreement.getChargeDays());
 	    assertEquals("Final Charge", finalPrice, rentalAgreement.getFinalCharge());
 	}
 	
+    /*Test 4:
+     * Tool code: JAKD
+     * Checkout date: 9/3/15
+     * Rental days: 6
+     * Discount: 0%
+     * Final price: $9.97
+     */	
 	@Test
 	public void calcLaborDayNoHolidayCharge() { 
 		
 		String toolCode = "JAKD";
-		String rentalDays = "6";
-		String discount = "0";
-		String date = "9/3/15";
+		String toolType = "Jackhammer" ;
+		String toolBrand = "DeWalt" ;
+		int rentalDays = 6;
+		int discount = 0;
+		String dateString = "9/3/15";
+		LocalDate date = LocalDate.parse(dateString, dateInputFormatter);
 		String price = "2.99";
 		String chargeDays = "3";
 		
-		RentalAgreementForm rentalAgreementForm = new RentalAgreementForm();
-	    validateInputRentalAgreement(rentalAgreement, toolCode, rentalDays, discount, date);
-	    buildRentalAgreement(rentalAgreement, toolCode, rentalDays, discount, date);
-		
+		buildRentalAgreement(toolCode, toolType, toolBrand, rentalDays, discount, date);
+		calcRentalAgreement();
 	    BigDecimal finalPrice = calculatePrice(price, chargeDays, discount);
 	    
-	    assertEquals("Charge Days", Integer.parseInt(chargeDays), rentalAgreement.getChargeDays());
 	    assertEquals("Final Charge", finalPrice, rentalAgreement.getFinalCharge());
 	}
 	
+    /*Test 5:
+     * Tool code: JAKR
+     * Checkout date: 7/2/15
+     * Rental days: 9
+     * Discount: 0%
+     * Final price: $14.95
+     */	
 	@Test
 	public void calcIndependenceDaySaturdayNoHolidayChargeNoWeekendCharge() { 
 		
 		String toolCode = "JAKR";
-		String rentalDays = "9";
-		String discount = "0";
-		String date = "7/2/15";
+		String toolType = "Jackhammer" ;
+		String toolBrand = "Ridgid" ;
+		int rentalDays = 9;
+		int discount = 0;
+		String dateString = "7/2/15";
+		LocalDate date = LocalDate.parse(dateString, dateInputFormatter);
 		String price = "2.99";
 		String chargeDays = "5";
 		
-		RentalAgreementForm rentalAgreementForm = new RentalAgreementForm();
-	    validateInputRentalAgreement(rentalAgreement, toolCode, rentalDays, discount, date);
-	    buildRentalAgreement(rentalAgreement, toolCode, rentalDays, discount, date);
-		
+		buildRentalAgreement(toolCode, toolType, toolBrand, rentalDays, discount, date);
+		calcRentalAgreement();
 	    BigDecimal finalPrice = calculatePrice(price, chargeDays, discount);
 	    
-	    assertEquals("Charge Days", Integer.parseInt(chargeDays), rentalAgreement.getChargeDays());
 	    assertEquals("Final Charge", finalPrice, rentalAgreement.getFinalCharge());
 	}
-	
+
+	/*Test 6:
+     * Tool code: JAKR
+     * Checkout date: 7/2/20
+     * Rental days: 4
+     * Discount: 50%
+     * Final price: $1.49
+     */	
 	@Test
 	public void calcLowChargeDays() { 
 		
 		String toolCode = "JAKR";
-		String rentalDays = "4";
-		String discount = "50";
-		String date = "7/2/20";
+		String toolType = "Jackhammer" ;
+		String toolBrand = "Ridgid" ;
+		int rentalDays = 4;
+		int discount = 50;
+		String dateString = "7/2/20";
+		LocalDate date = LocalDate.parse(dateString, dateInputFormatter);
 		String price = "2.99";
 		String chargeDays = "1";
 		
-	    RentalAgreementForm rentalAgreementForm = new RentalAgreementForm();
-	    validateInputRentalAgreement(rentalAgreement, toolCode, rentalDays, discount, date);
-	    buildRentalAgreement(rentalAgreement, toolCode, rentalDays, discount, date);
-	    
+		buildRentalAgreement(toolCode, toolType, toolBrand, rentalDays, discount, date);
+		calcRentalAgreement();
 	    BigDecimal finalPrice = calculatePrice(price, chargeDays, discount);
 	    
-	    assertEquals("Charge Days", Integer.parseInt(chargeDays), rentalAgreement.getChargeDays());
 	    assertEquals("Final Charge", finalPrice, rentalAgreement.getFinalCharge());
 	}
 	
@@ -148,19 +188,19 @@ class RentalAgreementTest extends RentalAgreementForm {
 	public void calcNoChargeDays() { 
 		
 		String toolCode = "JAKR";
-		String rentalDays = "1";
-		String discount = "50";
-		String date = "7/3/23";
+		String toolType = "Jackhammer" ;
+		String toolBrand = "Ridgid" ;
+		int rentalDays = 1;
+		int discount = 50;
+		String dateString = "7/3/23";
+		LocalDate date = LocalDate.parse(dateString, dateInputFormatter);
 		String price = "2.99";
 		String chargeDays = "0";
 		
-	    RentalAgreementForm rentalAgreementForm = new RentalAgreementForm();
-	    validateInputRentalAgreement(rentalAgreement, toolCode, rentalDays, discount, date);
-	    buildRentalAgreement(rentalAgreement, toolCode, rentalDays, discount, date);
-	    
+		buildRentalAgreement(toolCode, toolType, toolBrand, rentalDays, discount, date);
+		calcRentalAgreement();
 	    BigDecimal finalPrice = calculatePrice(price, chargeDays, discount);
 	    
-	    assertEquals("Charge Days", Integer.parseInt(chargeDays), rentalAgreement.getChargeDays());
 	    assertEquals("Final Charge", finalPrice, rentalAgreement.getFinalCharge());
 	}
 	
@@ -206,7 +246,7 @@ class RentalAgreementTest extends RentalAgreementForm {
 	}
 	
 	@ParameterizedTest
-	@ValueSource(strings = {"0", "-5", ".9", "T", "^", ""})
+	@ValueSource(strings = {"-9999999999", "0", "-5", ".9", "9999999999", "T", "^", ""})
 	public void isNotValidRentalDays(String rentalDays) {
 		boolean result = validateInputRentalDays(rentalDays);
 		assertFalse(result);
@@ -220,7 +260,7 @@ class RentalAgreementTest extends RentalAgreementForm {
 	}
 	
 	@ParameterizedTest
-	@ValueSource(strings = {"-2147483647", "-10", ".9", "58.5", "300", "P", "@", ""})
+	@ValueSource(strings = {"-9999999999", "-2147483647", "-10", ".9", "58.5", "300", "P", "@", ""})
 	public void isNotValidDiscount(String discount) {
 		boolean result = validateInputDiscount(discount);
 		assertFalse(result);
@@ -243,7 +283,6 @@ class RentalAgreementTest extends RentalAgreementForm {
 	@ParameterizedTest
 	@ValueSource(strings = {"Ladder", "Chainsaw", "Jackhammer"})
 	public void existsInToolRentalCharge(String toolType) {
-		Tool tool = new Tool();
 		ToolRentalCharge toolRentalCharge = new ToolRentalCharge();
 		
         ToolRentalCharge result = XMLParser.findToolRentalChargeByToolType(toolRentalCharge, toolType);
@@ -256,7 +295,39 @@ class RentalAgreementTest extends RentalAgreementForm {
 	}
 	
 	
-	public BigDecimal calculatePrice(String charge, String days, String discount) {
+	@ParameterizedTest
+	@ValueSource(strings = {"9/7/15", "7/3/20", "7/3/15", "7/4/23"})
+	public void isHoliday(String dateString) {
+		LocalDate date = LocalDate.parse(dateString, dateInputFormatter);
+		boolean result = CalendarValidator.isHoliday(date);
+		assertTrue(result);
+	}
+	
+	@ParameterizedTest
+	@ValueSource(strings = {"9/4/15", "7/4/20", "7/4/15", "7/3/23"})	
+	public void isNotHoliday(String dateString) {
+		LocalDate date = LocalDate.parse(dateString, dateInputFormatter);
+		boolean result = CalendarValidator.isHoliday(date);
+		assertFalse(result);
+	}
+	
+	@ParameterizedTest
+	@ValueSource(strings = {"9/5/15", "7/4/20", "7/5/15", "7/2/23"})
+	public void isWeekend(String dateString) {
+		LocalDate date = LocalDate.parse(dateString, dateInputFormatter);
+		boolean result = CalendarValidator.isWeekend(date);
+		assertTrue(result);
+	}
+	
+	@ParameterizedTest
+	@ValueSource(strings = {"9/7/15", "7/6/20", "7/2/15", "7/4/23"})	
+	public void isNotWeekend(String dateString) {
+		LocalDate date = LocalDate.parse(dateString, dateInputFormatter);
+		boolean result = CalendarValidator.isWeekend(date);
+		assertFalse(result);
+	}
+	
+	public BigDecimal calculatePrice(String charge, String days, int discount) {
 		BigDecimal price = new BigDecimal(charge);
         BigDecimal chargeDays = new BigDecimal(days);
         BigDecimal discountPercent = new BigDecimal(discount);
@@ -268,35 +339,14 @@ class RentalAgreementTest extends RentalAgreementForm {
         return finalPrice;
 	}
 	
-	public RentalAgreement buildRentalAgreement(RentalAgreement rentalAgreement, String toolCode, String rentalDays, String discount, String date) {
-	    rentalAgreement.setToolCode(toolCode);
-	    try {
-		    int days = Integer.parseInt(rentalDays);
-		    rentalAgreement.setRentalDays(days);
-
-		    int discountPercent = Integer.parseInt(discount);
-		    rentalAgreement.setDiscountPercent(discountPercent);
-
-		    LocalDate checkoutDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("M/d/yy"));
-		    rentalAgreement.setCheckoutDate(checkoutDate);
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-		
-		ToolRentalCharge toolRentalCharge = new ToolRentalCharge();
-		toolRentalCharge.setToolType(rentalAgreement.getToolType());
-		toolRentalCharge.findToolRentalChargeByToolType();
-		rentalAgreement.setDailyRentalCharge(toolRentalCharge.getDailyCharge());
-		rentalAgreement.calculateValues(toolRentalCharge);
-		return rentalAgreement;
-	}
-	
-	public RentalAgreement validateInputRentalAgreement(RentalAgreement rentalAgreement, String toolCode, String rentalDays, String discount, String date) {
-	    validateInputToolCode(toolCode);
-	    validateInputRentalDays(rentalDays);
-	    validateInputDiscount(discount);
-	    validateInputDate(date);
-		return rentalAgreement;
+    private void buildRentalAgreement(String toolCode, String toolType, String toolBrand, int rentalDays, int discount,
+			LocalDate date) {
+		rentalAgreement.setToolCode(toolCode);
+		rentalAgreement.setToolType(toolType);
+		rentalAgreement.setToolBrand(toolBrand);
+		rentalAgreement.setRentalDays(rentalDays);
+		rentalAgreement.setDiscountPercent(discount);
+		rentalAgreement.setCheckoutDate(date);
 	}
 }
 

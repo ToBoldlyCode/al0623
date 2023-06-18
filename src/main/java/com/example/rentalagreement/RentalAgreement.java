@@ -2,9 +2,7 @@ package com.example.rentalagreement;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.Month;
 
 public class RentalAgreement {
 
@@ -159,8 +157,8 @@ public class RentalAgreement {
 		
 		LocalDate date = this.getCheckoutDate().plusDays(1);
 		while(!date.isAfter(this.getDueDate())) {
-			if((!toolRentalCharge.getWeekendCharge() && isWeekend(date)) ||
-				(!toolRentalCharge.getHolidayCharge() && isHoliday(date))) {
+			if((!toolRentalCharge.getWeekendCharge() && CalendarValidator.isWeekend(date)) ||
+				(!toolRentalCharge.getHolidayCharge() && CalendarValidator.isHoliday(date))) {
 				daysToCharge--;
 			}
 			date = date.plusDays(1);
@@ -168,31 +166,6 @@ public class RentalAgreement {
 
 		this.setChargeDays(daysToCharge);
 		
-	}
-
-	private boolean isHoliday(LocalDate date) {
-		Month month = date.getMonth();
-		int dayOfMonth = date.getDayOfMonth();
-		DayOfWeek dayOfWeek = date.getDayOfWeek();
-
-		if (month == Month.JULY) {
-			if ((dayOfMonth == 3 && dayOfWeek == DayOfWeek.FRIDAY) ||
-				(dayOfMonth == 5 && dayOfWeek == DayOfWeek.MONDAY)) {
-				return true;
-			}
-			if ((dayOfMonth == 4) && (dayOfWeek != DayOfWeek.SATURDAY) && (dayOfWeek != DayOfWeek.SUNDAY)) {
-				return true;
-			}
-		} else if ((month == Month.SEPTEMBER) && (dayOfWeek == DayOfWeek.MONDAY) && (dayOfMonth < 8)) {
-			return true;
-		}
-
-		return false;
-	}
-	
-	private boolean isWeekend(LocalDate date) {
-		DayOfWeek dayOfWeek = date.getDayOfWeek();
-        return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
 	}
 	
 	private void calculateOriginalCharge() {
@@ -218,15 +191,5 @@ public class RentalAgreement {
 		total = total.setScale(2, RoundingMode.HALF_UP);
 		this.setFinalCharge(total);
 	}
-
-	@Override
-	public String toString() {
-		return "RentalAgreement [toolCode=" + toolCode + ", toolType=" + toolType + ", toolBrand=" + toolBrand
-				+ ", rentalDays=" + rentalDays + ", checkoutDate=" + checkoutDate + ", dueDate=" + dueDate
-				+ ", dailyRentalCharge=" + dailyRentalCharge + ", chargeDays=" + chargeDays + ", originalCharge="
-				+ originalCharge + ", discountPercent=" + discountPercent + ", discountAmount=" + discountAmount
-				+ ", finalCharge=" + finalCharge + "]";
-	}
-	
 	
 }
